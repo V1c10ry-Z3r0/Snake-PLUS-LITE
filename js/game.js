@@ -1,5 +1,5 @@
 import { canvas, ctx, snake1, snake2, dir1, dir2, apple, gameRunning, snakeColors } from './state.js';
-import { soloState, CELL_SIZE, gameSettings } from './state.js';
+import { soloState, CELL_SIZE, gameSettings, timer } from './state.js';
 
 // === Multiplayer Mode ===
 export function startGame() {
@@ -52,10 +52,13 @@ function seededPos(seed, width, height) {
 }
 
 function moveSnakeSolo(snake, dir) {
+  if (snake.length === 0) return undefined;
   const newHead = { x: snake[0].x + dir.x, y: snake[0].y + dir.y };
   snake.unshift(newHead);
   snake.pop();
+  return newHead;
 }
+
 
 function drawSolo(canvasId, snake, apple, color) {
   const canvas = document.getElementById(canvasId);
@@ -94,36 +97,41 @@ export function createSoloGame() {
   soloState.player2.alive = true;
   soloState.timer = 0;
   soloState.running = true;
+soloState.intervalId = setInterval(() => {
+  if (!soloState.running) return;
+  soloState.timer += 16;
+  if (soloState.timer >= timer.value) {
+    soloState.running = false;
+    clearInterval(soloState.intervalId);
+    alert("Time's up!");
+    return;
+  }
 
-    soloState.timer = 0;
-    soloState.intervalId = setInterval(() => {
-      if (!soloState.running) return;
-
-      soloState.timer += 16;
-
-      if (soloState.timer >= timer.value) {
-        soloState.running = false;
-        clearInterval(soloState.intervalId);
-        alert("Time's up!");
-        return;
-      }
-
-    if (soloState.player1.alive) {
-      moveSnakeSolo(soloState.player1.snake, soloState.player1.direction);
-      drawSolo("player1Canvas", soloState.player1.snake, soloState.player1.apple, snakeColors.p1);
-      if (checkCollision(soloState.player1.snake)) soloState.player1.alive = false;
+  // Player 1
+  if (soloState.player1.alive) {
+    const head = moveSnakeSolo(soloState.player1.snake, soloState.player1.direction);
+    if (head.x === soloState.player1.apple.x && head.y === soloState.player1.apple.y) {
+      soloState.player1.snake.push({ ...soloState.player1.snake[soloState.player1.snake.length - 1] });
+      soloState.player1.apple = seededPos(soloState.seed++, gameSettings.width, gameSettings.height);
     }
+    drawSolo("player1Canvas", soloState.player1.snake, soloState.player1.apple, snakeColors.p1);
+    if (checkCollision(soloState.player1.snake)) soloState.player1.alive = false;
+  }
 
-    if (soloState.player2.alive) {
-      moveSnakeSolo(soloState.player2.snake, soloState.player2.direction);
-      drawSolo("player2Canvas", soloState.player2.snake, soloState.player2.apple, snakeColors.p2);
-      if (checkCollision(soloState.player2.snake)) soloState.player2.alive = false;
+  // Player 2
+  if (soloState.player2.alive) {
+    const head = moveSnakeSolo(soloState.player2.snake, soloState.player2.direction);
+    if (head.x === soloState.player2.apple.x && head.y === soloState.player2.apple.y) {
+      soloState.player2.snake.push({ ...soloState.player2.snake[soloState.player2.snake.length - 1] });
+      soloState.player2.apple = seededPos(soloState.seed++, gameSettings.width, gameSettings.height);
     }
+    drawSolo("player2Canvas", soloState.player2.snake, soloState.player2.apple, snakeColors.p2);
+    if (checkCollision(soloState.player2.snake)) soloState.player2.alive = false;
+  }
 
-    if (!soloState.player1.alive || !soloState.player2.alive) {
-      clearInterval(soloState.intervalId);
-      soloState.running = false;
-      alert("Game over! Time: " + soloState.timer + "ms");
-    }
-  }, 16);
-}
+  if (!soloState.player1.alive || !soloState.player2.alive) {
+    clearInterval(soloState.intervalId);
+    soloState.running = false;
+    alert("Game over! Time: " + soloState.timer + "ms");
+  }
+}, 16)};
