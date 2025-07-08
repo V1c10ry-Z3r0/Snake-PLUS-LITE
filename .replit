@@ -1,5 +1,6 @@
 entrypoint = "index.html"
 modules = ["web"]
+run = "python3 -m http.server 8080"
 
 [nix]
 channel = "stable-24_11"

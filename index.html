@@ -1,16 +1,91 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width">
-  <title>replit</title>
-  <link href="style.css" rel="stylesheet" type="text/css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Snake Duel</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
-
 <body>
-  Hello world
-  <script src="script.js"></script>
-</body>
 
+  <!-- Main Menu -->
+  <div id="main" class="menu visible">
+    <h1>Snake Duel</h1>
+    <button id="playBtn">Play Game</button>
+    <button id="customizeBtn">Customization</button>
+    <button id="leaderboardBtn">Leaderboards</button>
+    <button id="optionsBtn">Options</button>
+    <button id="exitBtn">Exit Game</button>
+  </div>
+
+  <!-- Game Mode Selection -->
+  <div id="gameMode" class="menu">
+    <h2>Select Mode</h2>
+    <button id="soloBtn">Solo Game</button>
+    <button id="multiBtn">Multi Game</button>
+    <button id="backToMain1">Back</button>
+  </div>
+
+  <!-- Customization -->
+  <div id="customization" class="menu">
+    <h2>Snake Colors</h2>
+    <label>Player 1 Color: <input type="color" id="color1" value="#00FF00" /></label><br>
+    <label>Player 2 Color: <input type="color" id="color2" value="#FF0000" /></label><br>
+    <button id="saveColorsBtn">Save Colors</button>
+    <button id="backToMain2">Back</button>
+  </div>
+
+  <!-- Leaderboards -->
+  <div id="leaderboards" class="menu">
+    <div id="winStats"></div>
+    <button id="backToMain3">Back</button>
+  </div>
+
+  <!-- Game Settings -->
+  <div id="settingsForm" class="menu">
+    <div id="settingsContent"></div>
+    <button id="backToMain4">Back</button>
+  </div>
+
+  <!-- Game Canvas -->
+  <canvas id="gameCanvas" width="800" height="600"></canvas>
+
+  <script type="module">
+    import { canvas, ctx, CELL_SIZE, WIDTH, HEIGHT, snake1, snake2, dir1, dir2, apple, gameRunning, soloMode, scores, wins, snakeColors, gameSettings } from './js/state.js';
+    import { createSettingsForm } from './js/settings.js';
+    import { showWinStats, determineWinner } from './js/leaderboard.js';
+    import { saveSettings, loadSettings } from './js/storage.js';
+    import { startGame, updateGame } from './js/game.js';
+    import { initMenus, switchMenu } from './js/menus.js';
+    import { initCustomizationUI } from './js/customization.js';
+
+    function gameLoop() {
+      if (!updateGame()) return;
+      setTimeout(gameLoop, gameSettings.speed);
+    }
+
+    function launchGame(isSolo) {
+      soloMode.value = isSolo;
+      startGame();
+      gameLoop();
+    }
+
+    window.launchSoloGame = () => launchGame(true);
+    window.launchMultiGame = () => launchGame(false);
+
+    loadSettings();
+    initMenus();
+    initCustomizationUI();
+    createSettingsForm();
+    showWinStats();
+
+    // Wire up manual buttons
+    document.getElementById("soloBtn").onclick = () => launchGame(true);
+    document.getElementById("multiBtn").onclick = () => launchGame(false);
+    document.getElementById("backToMain1").onclick = () => switchMenu("main");
+    document.getElementById("backToMain2").onclick = () => switchMenu("main");
+    document.getElementById("backToMain3").onclick = () => switchMenu("main");
+    document.getElementById("backToMain4").onclick = () => switchMenu("main");
+  </script>
+</body>
 </html>
