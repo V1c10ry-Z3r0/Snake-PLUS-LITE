@@ -36,5 +36,25 @@ export const gameSettings = {
 };
 
 export const timer = { value: 0 };
+;
+
+export const soloState = {
+  timer: 0,
+  intervalId: null,
+  running: false,
+  seed: Date.now(), // shared RNG seed
+  player1: {
+    snake: [],
+    direction: { x: 1, y: 0 },
+    apple: {},
+    alive: true
+  },
+  player2: {
+    snake: [],
+    direction: { x: 1, y: 0 },
+    apple: {},
+    alive: true
+  }
+};
 
 ;

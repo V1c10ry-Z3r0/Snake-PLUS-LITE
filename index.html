@@ -48,15 +48,15 @@
   </div>
 
   <!-- Game Canvases -->
-  <div id="soloCanvasContainer" style="display:none">
-    <canvas id="player1Canvas" width="400" height="600"></canvas>
-    <canvas id="player2Canvas" width="400" height="600"></canvas>
+  <div id="soloCanvasContainer" style="display:none; gap: 20px; justify-content:center">
+    <canvas id="player1Canvas" width="400" height="400"></canvas>
+    <canvas id="player2Canvas" width="400" height="400"></canvas>
   </div>
 
   <canvas id="gameCanvas" width="800" height="600" style="display: none;"></canvas>
 
   <script type="module">
-    import { canvas, ctx, CELL_SIZE, WIDTH, HEIGHT, snake1, snake2, dir1, dir2, apple, gameRunning, soloMode, scores, wins, snakeColors, gameSettings } from './js/state.js';
+    import { canvas, ctx, CELL_SIZE, WIDTH, HEIGHT, snake1, snake2, dir1, dir2, apple, gameRunning, soloMode, soloState, scores, wins, snakeColors, gameSettings } from './js/state.js';
     import { createSettingsForm } from './js/settings.js';
     import { showWinStats, determineWinner } from './js/leaderboard.js';
     import { saveSettings, loadSettings } from './js/storage.js';
@@ -102,15 +102,28 @@
       showWinStats();
 
       document.addEventListener('keydown', e => {
-        switch (e.key) {
-          case 'w': dir1.x = 0; dir1.y = -1; break;
-          case 's': dir1.x = 0; dir1.y = 1; break;
-          case 'a': dir1.x = -1; dir1.y = 0; break;
-          case 'd': dir1.x = 1; dir1.y = 0; break;
-          case 'ArrowUp': dir2.x = 0; dir2.y = -1; break;
-          case 'ArrowDown': dir2.x = 0; dir2.y = 1; break;
-          case 'ArrowLeft': dir2.x = -1; dir2.y = 0; break;
-          case 'ArrowRight': dir2.x = 1; dir2.y = 0; break;
+        if (soloMode.value) {
+          switch (e.key) {
+            case 'w': soloState.player1.direction = { x: 0, y: -1 }; break;
+            case 's': soloState.player1.direction = { x: 0, y: 1 }; break;
+            case 'a': soloState.player1.direction = { x: -1, y: 0 }; break;
+            case 'd': soloState.player1.direction = { x: 1, y: 0 }; break;
+            case 'ArrowUp': soloState.player2.direction = { x: 0, y: -1 }; break;
+            case 'ArrowDown': soloState.player2.direction = { x: 0, y: 1 }; break;
+            case 'ArrowLeft': soloState.player2.direction = { x: -1, y: 0 }; break;
+            case 'ArrowRight': soloState.player2.direction = { x: 1, y: 0 }; break;
+          }
+        } else {
+          switch (e.key) {
+            case 'w': dir1.x = 0; dir1.y = -1; break;
+            case 's': dir1.x = 0; dir1.y = 1; break;
+            case 'a': dir1.x = -1; dir1.y = 0; break;
+            case 'd': dir1.x = 1; dir1.y = 0; break;
+            case 'ArrowUp': dir2.x = 0; dir2.y = -1; break;
+            case 'ArrowDown': dir2.x = 0; dir2.y = 1; break;
+            case 'ArrowLeft': dir2.x = -1; dir2.y = 0; break;
+            case 'ArrowRight': dir2.x = 1; dir2.y = 0; break;
+          }
         }
       });
 
