@@ -47,8 +47,13 @@
     <button id="backToMain4">Back</button>
   </div>
 
-  <!-- Game Canvas -->
-  <canvas id="gameCanvas" width="800" height="600"></canvas>
+  <!-- Game Canvases -->
+  <div id="soloCanvasContainer" style="display:none">
+    <canvas id="player1Canvas" width="400" height="600"></canvas>
+    <canvas id="player2Canvas" width="400" height="600"></canvas>
+  </div>
+
+  <canvas id="gameCanvas" width="800" height="600" style="display: none;"></canvas>
 
   <script type="module">
     import { canvas, ctx, CELL_SIZE, WIDTH, HEIGHT, snake1, snake2, dir1, dir2, apple, gameRunning, soloMode, scores, wins, snakeColors, gameSettings } from './js/state.js';
@@ -124,7 +129,5 @@
       document.getElementById("backToMain4").onclick = () => switchMenu("main");
     });
   </script>
-
-
 </body>
 </html>
