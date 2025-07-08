@@ -55,37 +55,76 @@
     import { createSettingsForm } from './js/settings.js';
     import { showWinStats, determineWinner } from './js/leaderboard.js';
     import { saveSettings, loadSettings } from './js/storage.js';
-    import { startGame, updateGame } from './js/game.js';
+    import { startGame, updateGame, createSoloGame } from './js/game.js';
     import { initMenus, switchMenu } from './js/menus.js';
     import { initCustomizationUI } from './js/customization.js';
 
-    function gameLoop() {
-      if (!updateGame()) return;
-      setTimeout(gameLoop, gameSettings.speed);
-    }
+    document.addEventListener("DOMContentLoaded", () => {
+      function gameLoop() {
+        if (!updateGame()) {
+          document.getElementById('gameCanvas').style.display = 'none';
+          switchMenu('main');
+          return;
+        }
+        setTimeout(gameLoop, gameSettings.speed);
+      }
 
-    function launchGame(isSolo) {
-      soloMode.value = isSolo;
-      startGame();
-      gameLoop();
-    }
+      function launchGame(isSolo) {
+        soloMode.value = isSolo;
+        switchMenu(null);
 
-    window.launchSoloGame = () => launchGame(true);
-    window.launchMultiGame = () => launchGame(false);
+        if (isSolo) {
+          document.getElementById('gameCanvas').style.display = 'none';
+          document.getElementById('soloCanvasContainer').style.display = 'flex';
+          createSoloGame();
+        } else {
+          document.getElementById('soloCanvasContainer').style.display = 'none';
+          canvas.width = gameSettings.width * CELL_SIZE;
+          canvas.height = gameSettings.height * CELL_SIZE;
+          canvas.style.display = 'block';
+          startGame();
+          gameLoop();
+        }
+      }
 
-    loadSettings();
-    initMenus();
-    initCustomizationUI();
-    createSettingsForm();
-    showWinStats();
+      window.launchSoloGame = () => launchGame(true);
+      window.launchMultiGame = () => launchGame(false);
 
-    // Wire up manual buttons
-    document.getElementById("soloBtn").onclick = () => launchGame(true);
-    document.getElementById("multiBtn").onclick = () => launchGame(false);
-    document.getElementById("backToMain1").onclick = () => switchMenu("main");
-    document.getElementById("backToMain2").onclick = () => switchMenu("main");
-    document.getElementById("backToMain3").onclick = () => switchMenu("main");
-    document.getElementById("backToMain4").onclick = () => switchMenu("main");
+      loadSettings();
+      initMenus();
+      initCustomizationUI();
+      createSettingsForm();
+      showWinStats();
+
+      document.addEventListener('keydown', e => {
+        switch (e.key) {
+          case 'w': dir1.x = 0; dir1.y = -1; break;
+          case 's': dir1.x = 0; dir1.y = 1; break;
+          case 'a': dir1.x = -1; dir1.y = 0; break;
+          case 'd': dir1.x = 1; dir1.y = 0; break;
+          case 'ArrowUp': dir2.x = 0; dir2.y = -1; break;
+          case 'ArrowDown': dir2.x = 0; dir2.y = 1; break;
+          case 'ArrowLeft': dir2.x = -1; dir2.y = 0; break;
+          case 'ArrowRight': dir2.x = 1; dir2.y = 0; break;
+        }
+      });
+
+      // Wire up buttons
+      document.getElementById("playBtn").onclick = () => switchMenu("gameMode");
+      document.getElementById("customizeBtn").onclick = () => switchMenu("customization");
+      document.getElementById("leaderboardBtn").onclick = () => switchMenu("leaderboards");
+      document.getElementById("optionsBtn").onclick = () => switchMenu("settingsForm");
+      document.getElementById("exitBtn").onclick = () => window.close();
+
+      document.getElementById("soloBtn").onclick = () => launchGame(true);
+      document.getElementById("multiBtn").onclick = () => launchGame(false);
+      document.getElementById("backToMain1").onclick = () => switchMenu("main");
+      document.getElementById("backToMain2").onclick = () => switchMenu("main");
+      document.getElementById("backToMain3").onclick = () => switchMenu("main");
+      document.getElementById("backToMain4").onclick = () => switchMenu("main");
+    });
   </script>
+
+
 </body>
 </html>
