@@ -1,4 +1,4 @@
-import { canvas, ctx, snake1, snake2, dir1, dir2, apple, gameRunning } from './state.js';
+import { canvas, ctx, snake1, snake2, dir1, dir2, apple, gameRunning, snakeColors } from './state.js';
 import { soloState, CELL_SIZE, gameSettings } from './state.js';
 
 // === Multiplayer Mode ===
@@ -27,11 +27,14 @@ export function updateGame() {
 
 function drawMultiplayer() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.fillStyle = '#00FF00';
+
+  ctx.fillStyle = snakeColors.p1;
   snake1.body.forEach(seg => ctx.fillRect(seg.x * CELL_SIZE, seg.y * CELL_SIZE, CELL_SIZE, CELL_SIZE));
-  ctx.fillStyle = '#FF0000';
+
+  ctx.fillStyle = snakeColors.p2;
   snake2.body.forEach(seg => ctx.fillRect(seg.x * CELL_SIZE, seg.y * CELL_SIZE, CELL_SIZE, CELL_SIZE));
-  ctx.fillStyle = '#FF00FF';
+
+  ctx.fillStyle = '#FF00FF'; // Apple
   ctx.fillRect(apple.x * CELL_SIZE, apple.y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
 }
 
@@ -92,18 +95,28 @@ export function createSoloGame() {
   soloState.timer = 0;
   soloState.running = true;
 
-  soloState.intervalId = setInterval(() => {
-    soloState.timer += 16;
+    soloState.timer = 0;
+    soloState.intervalId = setInterval(() => {
+      if (!soloState.running) return;
+
+      soloState.timer += 16;
+
+      if (soloState.timer >= timer.value) {
+        soloState.running = false;
+        clearInterval(soloState.intervalId);
+        alert("Time's up!");
+        return;
+      }
 
     if (soloState.player1.alive) {
       moveSnakeSolo(soloState.player1.snake, soloState.player1.direction);
-      drawSolo("player1Canvas", soloState.player1.snake, soloState.player1.apple, "#00FF00");
+      drawSolo("player1Canvas", soloState.player1.snake, soloState.player1.apple, snakeColors.p1);
       if (checkCollision(soloState.player1.snake)) soloState.player1.alive = false;
     }
 
     if (soloState.player2.alive) {
       moveSnakeSolo(soloState.player2.snake, soloState.player2.direction);
-      drawSolo("player2Canvas", soloState.player2.snake, soloState.player2.apple, "#FF0000");
+      drawSolo("player2Canvas", soloState.player2.snake, soloState.player2.apple, snakeColors.p2);
       if (checkCollision(soloState.player2.snake)) soloState.player2.alive = false;
     }
 

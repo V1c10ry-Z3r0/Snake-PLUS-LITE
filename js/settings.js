@@ -1,4 +1,4 @@
-import { gameSettings } from './state.js';
+import { gameSettings, timer } from './state.js';
 import { startGame } from './game.js';
 
 export function createSettingsForm() {
@@ -24,7 +24,8 @@ window.applySettings = function (isMulti) {
   gameSettings.allowSelfCross = document.getElementById('settingSelf').checked;
   gameSettings.allowCross = document.getElementById('settingCross').checked;
   gameSettings.obstacleCount = parseInt(document.getElementById('settingObstacles').value);
-  timer.value = parseInt(document.getElementById('settingTimer').value) * 10;
+  timer.value = parseInt(document.getElementById('settingTimer').value) * 1000; // seconds to ms
+
 
   startGame(!isMulti);
 };

@@ -50,3 +50,4 @@ export const soloState = {
 };
 
 export const wins = { p1: 0, p2: 0 };
+export const timer = { value: 60000 }; // default 60 seconds
