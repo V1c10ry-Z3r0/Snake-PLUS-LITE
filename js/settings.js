@@ -1,4 +1,4 @@
-import { gameSettings, timer } from './state.js';
+import { gameSettings } from './state.js';
 import { startGame } from './game.js';
 
 export function createSettingsForm() {

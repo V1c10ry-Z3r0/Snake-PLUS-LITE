@@ -1,8 +1,9 @@
+import { snakeColors, wins } from './state.js';
+
 export function saveSettings() {
   const settings = {
     snakeColors,
-    wins,
-    scores
+    wins
   };
   localStorage.setItem('snakeSettings', JSON.stringify(settings));
 }

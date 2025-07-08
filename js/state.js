@@ -2,21 +2,16 @@ export const canvas = document.getElementById('gameCanvas');
 export const ctx = canvas.getContext('2d');
 
 export const CELL_SIZE = 20;
-export const WIDTH = canvas.width;
-export const HEIGHT = canvas.height;
 
-export const snake1 = [];
-export const snake2 = [];
+export const snake1 = { body: [] };
+export const snake2 = { body: [] };
 
 export const dir1 = { x: 1, y: 0 };
 export const dir2 = { x: -1, y: 0 };
 
 export const apple = { x: 5, y: 5 };
 export const gameRunning = { value: false };
-export const soloMode = { value: true };
-
-export const scores = { p1: 0, p2: 0 };
-export const wins = { p1: 0, p2: 0 };
+export const soloMode = { value: false };
 
 export const snakeColors = {
   p1: '#00FF00',
@@ -35,14 +30,11 @@ export const gameSettings = {
   snakeLength: 3,
 };
 
-export const timer = { value: 0 };
-;
-
 export const soloState = {
   timer: 0,
   intervalId: null,
   running: false,
-  seed: Date.now(), // shared RNG seed
+  seed: Date.now(),
   player1: {
     snake: [],
     direction: { x: 1, y: 0 },
@@ -57,4 +49,4 @@ export const soloState = {
   }
 };
 
-;
+export const wins = { p1: 0, p2: 0 };

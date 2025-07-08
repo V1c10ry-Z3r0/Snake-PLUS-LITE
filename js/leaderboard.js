@@ -1,4 +1,4 @@
-import { scores, wins } from './state.js';
+import { wins } from './state.js';
 
 export function showWinStats() {
   const div = document.getElementById('winStats');
